@@ -202,9 +202,9 @@ Dockerizing the Appswave Spring Boot application involves creating a Dockerfile 
 ### 1. Pull the Docker Image from Docker Hub
 
 To get the latest `Appswave` application image, run the following command:
-
 ```bash
 docker pull orabiii/appswave:latest```
+
 
 ### 2. Run the Docker Image
 
