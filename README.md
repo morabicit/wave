@@ -32,8 +32,8 @@ This project is a backend implementation of a **News Management System**, develo
 - **Security**: Spring Security with JWT (JSON Web Tokens)
 - **Password Hashing**: BCryptPasswordEncoder
 - **Workflow Engine**: Spring StateMachine
-- **Scheduling**: Spring `@EnableScheduling`
-- **Validation**: Java Bean Validation API (`javax.validation.constraints.*`)
+- **Scheduling**: Spring Task Scheduling
+- **Validation**: Java Bean Validation API
 - **API Documentation**: Swagger
 - **Build Tool**: Maven
 
@@ -43,68 +43,72 @@ This project is a backend implementation of a **News Management System**, develo
 
 ### JWT Authentication
 
+- Implements JWT for securing APIs.
 - **Token Time-To-Live (TTL)**: 1 minute.
 - Includes a **refresh token mechanism**.
 - **Signature Algorithm**: HS512.
-- Only specific endpoints are permitted without JWT; all others require authentication.
-- Global method security is enabled using `@EnableGlobalMethodSecurity(prePostEnabled = true)` for **role-based authorization**.
+- Only specific endpoints are permitted without authentication; all others require a valid JWT.
+- Role-based access control is enabled using Spring Security to secure methods and APIs.
 
 ### Password Hashing
 
-- Passwords are hashed using `BCryptPasswordEncoder` before being stored in the database, ensuring secure authentication.
+- Passwords are hashed using the **BCryptPasswordEncoder** algorithm before being stored in the database, ensuring secure authentication and storage.
 
 ---
 
 ## Workflow Engine
 
-This project uses **Spring StateMachine** to manage transitions between news statuses.
-
+- Uses **Spring StateMachine** to handle state transitions for news statuses.
 - **Statuses**: `PENDING`, `APPROVED`, `DELETED`, and `PENDING_DELETION`.
-- **Event Listeners**: A `StateMachineListener` is implemented to log status transitions.
-- **WorkflowLog Entity**: Logs all actions (e.g., status changes) with timestamps, stored for auditing purposes.
+- Logs state transitions to the database via a custom WorkflowLog entity, ensuring traceability.
+- **Listeners**: StateMachine listeners are implemented to monitor events and record logs.
 
 ---
 
 ## Scheduler for Soft Deletion
 
-- A **Spring Scheduler** runs daily at midnight to softly delete news items whose publish dates have passed.
+- Implements task scheduling using **Spring Task Scheduling**.
+- The scheduler runs a daily task at midnight to softly delete expired news items based on their publish date.
 - **Cron Expression**: `0 0 0 * * ?`
 
 ---
 
 ## Database and ORM
 
-- **Database**: MySQL
-- **ORM Framework**: Hibernate
-- Entities are mapped to database tables using **JPA annotations**.
+- **Database**: MySQL is used to store all entities and data.
+- **ORM Framework**: Hibernate is used for interacting with the database.
+- Entities are mapped to database tables using **Java Persistence API (JPA)** annotations.
 
 ---
 
 ## Validation
 
-- **Input Validation**: 
-  - Uses the Java Bean Validation API (`javax.validation.constraints.*`).
-  - Ensures consistency and integrity of API request data.
-  - Validates fields like `email`, `password`, and `name` against specific criteria.
+- Input validation is implemented using the **Java Bean Validation API**.
+- Ensures data integrity by validating required fields, data types, and constraints.
+- Examples of validations:
+  - Validating email format.
+  - Ensuring password meets security requirements.
+  - Checking for non-null fields like `name` or `role`.
 
 ---
 
 ## API Documentation
 
-Swagger is used to document the APIs. You can access the Swagger UI here:
-
-- **URL**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- Swagger is used for API documentation.
+- API endpoints are documented and can be tested using Swagger UI.
+- **Access URL**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 
 ## Project Structure
 
-- **Controller Layer**: Contains API endpoints.
-- **Service Layer**: Handles business logic.
-- **Repository Layer**: DAO layer using Hibernate for database interactions.
-- **Entities**: Represent database tables.
-- **Enums**: Define roles and statuses.
-- **Exceptions**: Custom exceptions and global exception handling.
+- **Controller Layer**: Handles API endpoints for authentication, user management, and news operations.
+- **Service Layer**: Contains business logic for user and news workflows.
+- **Repository Layer**: Manages database access using Hibernate and JPA.
+- **Entities**: Represent database tables and include mappings for relationships.
+- **Workflow Engine**: Manages status transitions for news using Spring StateMachine.
+- **Enums**: Define roles and news statuses.
+- **Exception Handling**: Includes a global exception handling mechanism.
 
 ---
 
@@ -113,14 +117,11 @@ Swagger is used to document the APIs. You can access the Swagger UI here:
 ### Roles:
 
 1. **USER**:
-   - Access authentication APIs.
-   - Read news.
-
+   - Can access authentication APIs and view news.
 2. **WRITER**:
-   - Perform CRUD operations on news (publishing requires admin approval).
-
+   - Can create, update, or delete news (requires admin approval for publishing).
 3. **ADMIN**:
-   - Full access to all APIs.
+   - Has full access to all APIs and functionalities.
 
 ### Default Role:
 
@@ -130,10 +131,9 @@ Swagger is used to document the APIs. You can access the Swagger UI here:
 
 ## Exception Handling
 
-- **Global Exception Handler**:
-  - Uses `@RestControllerAdvice` to handle exceptions globally.
-  - Custom exceptions and validation errors are handled gracefully.
-  - Validation errors return detailed error messages.
+- Implements a global exception handling mechanism using **Spring Rest Controller Advice**.
+- Custom exceptions are handled to provide meaningful error messages.
+- Validation errors are processed and return detailed messages with field-specific issues.
 
 ---
 
