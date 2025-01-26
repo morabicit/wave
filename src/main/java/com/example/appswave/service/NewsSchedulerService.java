@@ -1,15 +1,12 @@
 package com.example.appswave.service;
 
-import com.example.appswave.entity.News;
 import com.example.appswave.enums.Status;
 import com.example.appswave.repository.NewsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class NewsSchedulerService {

@@ -10,7 +10,6 @@ import com.example.appswave.repository.NewsRepository;
 import com.example.appswave.repository.UserRepository;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.statemachine.StateMachine;
@@ -65,6 +64,7 @@ public class NewsService {
         if (currentUser.getRole() != Role.ADMIN && !news.getCreatedBy().equals(currentUser)) {
             throw new AccessDeniedException("You are not authorized to delete this news");
         }
+        Status oldStatus = news.getStatus();
         if (currentUser.getRole() == Role.ADMIN) {
             if (news.getStatus() == Status.PENDING) {
                 newsRepository.deleteById(id);
@@ -82,8 +82,9 @@ public class NewsService {
                 throw new AccessDeniedException("News already pending for deletion");
             }
         }
-        initMachines(news);
+        initMachines(news, oldStatus);
     }
+
     public String approveNews(Long id){
         String message = "News approved successfully";
         News news = newsRepository.findById(id).orElseThrow(() -> new RuntimeException("News not found"));
@@ -91,9 +92,11 @@ public class NewsService {
             message = "News is already approved";
             return message;
         }
+        Status oldStatus= news.getStatus();
         news.setStatus(Status.APPROVED);
         newsRepository.save(news);
-        initMachines(news);
+        stateMachine.sendEvent(Event.APPROVE);
+        initMachines(news ,oldStatus);
         return message;
     }
     public List<News> getPendingNews() {
@@ -123,18 +126,20 @@ public class NewsService {
     public String approveDeleteNews(Long id) {
         News news = (News) newsRepository.findByIdAndStatus(id, Status.PENDING_DELETION)
                 .orElseThrow(() -> new RuntimeException("No pending for deletion news found with id : " + id));
+        Status oldStatus = news.getStatus();
         news.setStatus(Status.DELETED);
         newsRepository.save(news);
-        initMachines(news);
+        initMachines(news, oldStatus);
         return "Deletion request approved. News deleted successfully.";
     }
 
     public String rejectDeleteNews(Long id) {
         News news = (News) newsRepository.findByIdAndStatus(id, Status.PENDING_DELETION)
                 .orElseThrow(() -> new RuntimeException("No pending for deletion news found with id : " + id));
+        Status oldStatus = news.getStatus();
         news.setStatus(Status.APPROVED);
         newsRepository.save(news);
-        initMachines(news);
+        initMachines(news, oldStatus);
         return "Deletion request rejected. News is still approved.";
     }
 
@@ -146,11 +151,11 @@ public class NewsService {
         return  userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new AccessDeniedException("User not found"));
     }
-    public void initMachines(News news) {
+    public void initMachines(News news,Status oldStatus) {
         stateMachine.stop();
         stateMachine.getStateMachineAccessor()
                 .doWithAllRegions(access -> access.resetStateMachine(
-                        new DefaultStateMachineContext<>(news.getStatus(), null, null, null)));
+                        new DefaultStateMachineContext<>(oldStatus, null, null, null)));
 
         stateMachine.start();
         stateMachine.sendEvent(MessageBuilder.withPayload(Event.APPROVE)

@@ -3,7 +3,6 @@ package com.example.appswave.controller;
 import com.example.appswave.dto.LoginRequest;
 import com.example.appswave.entity.User;
 import com.example.appswave.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

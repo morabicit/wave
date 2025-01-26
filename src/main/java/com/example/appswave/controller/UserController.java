@@ -6,11 +6,9 @@ import com.example.appswave.entity.User;
 import com.example.appswave.enums.Role;
 import com.example.appswave.exception.UserNotFound;
 import com.example.appswave.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +23,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody User user) {
         UserDto createdUser = userService.createUser(user);
@@ -44,6 +43,7 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFound("User not found"));
     }
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
@@ -52,11 +52,13 @@ public class UserController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
     @PutMapping("/{id}/role")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<String> assignRole(@PathVariable Long id, @RequestBody Map<String, String> requestBody) {
         try {
             String role = requestBody.get("role");

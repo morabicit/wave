@@ -9,6 +9,8 @@ import org.springframework.statemachine.config.builders.StateMachineConfiguratio
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 
+import java.util.EnumSet;
+
 @Configuration
 @EnableStateMachine
 public class NewsStateMachineConfig extends StateMachineConfigurerAdapter<Status, Event> {
@@ -18,14 +20,13 @@ public class NewsStateMachineConfig extends StateMachineConfigurerAdapter<Status
         this.workflowStateMachineListener = workflowStateMachineListener;
     }
 
+
     @Override
     public void configure(StateMachineStateConfigurer<Status, Event> states) throws Exception {
         states
                 .withStates()
                 .initial(Status.PENDING)
-                .state(Status.APPROVED)
-                .state(Status.DELETED)
-                .state(Status.PENDING_DELETION);
+                .states(EnumSet.allOf(Status.class));
     }
 
     @Override

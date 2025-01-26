@@ -42,9 +42,6 @@ public class UserService {
         return userRepository.findById(id)
                 .map(UserDto::userToUserDto);
     }
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound("User not found"));
         if (userRepository.findByEmail(userDetails.getEmail()).isPresent() &&

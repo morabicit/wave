@@ -12,7 +12,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private static final long JWT_EXPIRATION = 30*60 * 1000; // 1 minute
+    private static final long JWT_EXPIRATION =  60 * 1000; // 1 minute
     private static final long REFRESH_EXPIRATION = 30 * 60 * 1000; // 0.5 hour
 
     public String generateAccessToken(String email) {

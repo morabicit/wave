@@ -40,7 +40,6 @@ public class News {
     private String descriptionAr;
 
     @NotNull(message = "Publish date is required")
-    @FutureOrPresent(message = "Publish date must be in the present or future")
     @Column(nullable = false, name = "publish_date")
     private Date publishDate;
 

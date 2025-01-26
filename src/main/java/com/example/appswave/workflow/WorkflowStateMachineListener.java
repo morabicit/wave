@@ -22,12 +22,12 @@ public class WorkflowStateMachineListener extends StateMachineListenerAdapter<St
         this.workflowLogRepository = workflowLogRepository;
     }
 
-    /*@Override
+    @Override
     public void stateChanged(State<Status, Event> from, State<Status, Event> to) {
         String logMessage = "State changed from " + (from != null ? from.getId() : "null") + " to " + to.getId();
         WorkflowLog log = new WorkflowLog(logMessage, new Date());
         workflowLogRepository.save(log);
-    }*/
+    }
 
     @Override
     public void eventNotAccepted(Message<Event> event) {
@@ -42,7 +42,7 @@ public class WorkflowStateMachineListener extends StateMachineListenerAdapter<St
         //Message<Event> eventMessage = transition.getTrigger().getMessage();
         if (event != null) {
             //Long newsId = (Long) eventMessage.getHeaders().get("newsId");
-                String logMessage = "Event " + event + " triggered for news ID: " + "newsId";
+                String logMessage = "Event " + event + " triggered";
                 WorkflowLog log = new WorkflowLog(logMessage, new Date());
                 workflowLogRepository.save(log);
 
