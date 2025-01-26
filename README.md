@@ -54,21 +54,21 @@ This project is a backend implementation of a **News Management System**, develo
 
 - Passwords are hashed using the **BCryptPasswordEncoder** algorithm before being stored in the database, ensuring secure authentication and storage.
 - 
-# Authentication API
+### Authentication API
 
-## Endpoints
+### Endpoints
 
-### 1. POST `/api/auth/signup`
+#### 1. POST `/api/auth/signup`
 - Registers a new user.
 
-### 2. POST `/api/auth/login`
+#### 2. POST `/api/auth/login`
 - Logs in a user and returns an access token and refresh token.
 
-### 3. POST `/api/auth/logout`
+#### 3. POST `/api/auth/logout`
 - Logs out a user.  
 - Requires the access token in the Authorization header.
 
-### 4. POST `/api/auth/refresh`
+#### 4. POST `/api/auth/refresh`
 - Refreshes the access token for an extra 1 minute and return it for the user.  
 - Requires the refresh token in the Authorization header (valid for 30 minutes).
 
@@ -120,6 +120,7 @@ This project is a backend implementation of a **News Management System**, develo
 
 ## Project Structure
 
+- **Security Configurations**: Handles API authentication, implement filters, and generate/validate JWT tokens.
 - **Controller Layer**: Handles API endpoints for authentication, user management, and news operations.
 - **Service Layer**: Contains business logic for user and news workflows.
 - **Repository Layer**: Manages database access using Hibernate and JPA.
@@ -155,10 +156,30 @@ This project is a backend implementation of a **News Management System**, develo
 
 ---
 
-## Setup Instructions
+# Spring Boot Application Setup Instructions
 
-### Clone the Repository:
+1. Clone the repository:  
+   `git clone https://github.com/morabicit/wave.git`  
+   `cd <repository-name>`
 
-```bash
-git clone <repository-url>
-cd <project-folder>
+2. Ensure the following prerequisites are installed on your system:  
+   - Java 11  
+   - MySQL database server  
+
+3. Open the `src/main/resources/application.properties` file and update the following properties with your MySQL database configuration:
+
+   ```properties
+   spring.application.name=<your-application-name>
+   spring.datasource.url=jdbc:mysql://<your-database-host>:<your-database-port>/<your-database-name>
+   spring.datasource.username=<your-database-username>
+   spring.datasource.password=<your-database-password>
+   spring.jpa.hibernate.ddl-auto=<your-ddl-auto-strategy>
+   spring.jpa.show-sql=true```
+   
+4. Build the application using Maven and skip test:  
+`mvn clean install -DskipTests`
+
+5. Run the application:  
+`mvn spring-boot:run`
+
+6. Verify the application is running on `http://localhost:8080` and ensure your MySQL database is accessible. The application will automatically create or update tables in the database based on the JPA configuration.
