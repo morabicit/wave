@@ -183,3 +183,40 @@ This project is a backend implementation of a **News Management System**, develo
 `mvn spring-boot:run`
 
 6. Verify the application is running on `http://localhost:8080` and ensure your MySQL database is accessible. The application will automatically create or update tables in the database based on the JPA configuration.
+
+# Docker image for the Application
+
+Dockerizing the Appswave Spring Boot application involves creating a Dockerfile to containerize the application, specifying its dependencies and runtime environment. Additionally, a docker-compose.yml file is used to define and manage multi-container setups, including a MySQL database service configured with required environment variables. The application image is built using docker build and tagged for identification. Once built, the image is pushed to Docker Hub using docker push, making it available for others to pull and run seamlessly, ensuring consistency, scalability, and ease of deployment across environments.
+
+## Technologies Used
+
+- **Spring Boot** (Java 11)
+- **MySQL** (Database)
+- **Docker** (Containerization)
+- **Docker Compose** (Multi-container management)
+
+---
+
+## How to Pull and Run the Application
+
+### 1. Pull the Docker Image from Docker Hub
+
+To get the latest `Appswave` application image, run the following command:
+
+```bash
+docker pull orabiii/appswave:latest```
+
+### 2. Run the Docker Image
+
+To run the downloaded image, execute:
+
+```bash
+docker run -d -p <Expose Port>:8080 --name appswave orabiii/appswave:latest```
+
+### 3. Access the Application
+Once the container is running, the application will be accessible at:
+
+To run the downloaded image, execute:
+
+```bash
+http://localhost:<Expose Port>```

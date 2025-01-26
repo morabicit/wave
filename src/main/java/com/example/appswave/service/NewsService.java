@@ -8,6 +8,7 @@ import com.example.appswave.enums.Role;
 import com.example.appswave.enums.Status;
 import com.example.appswave.repository.NewsRepository;
 import com.example.appswave.repository.UserRepository;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,6 @@ public class NewsService {
 
     private final NewsRepository newsRepository;
     private final UserRepository userRepository;
-
     private final StateMachine<Status, Event> stateMachine;
 
     public NewsService(NewsRepository newsRepository, UserRepository userRepository, StateMachine<Status, Event> stateMachine) {
@@ -35,6 +35,7 @@ public class NewsService {
         this.userRepository = userRepository;
         this.stateMachine = stateMachine;
     }
+
 
     public News createNews(News news) throws AccessDeniedException {
         User createdBy = getCurrentUser();
@@ -95,7 +96,6 @@ public class NewsService {
         Status oldStatus= news.getStatus();
         news.setStatus(Status.APPROVED);
         newsRepository.save(news);
-        stateMachine.sendEvent(Event.APPROVE);
         initMachines(news ,oldStatus);
         return message;
     }
@@ -158,8 +158,9 @@ public class NewsService {
                         new DefaultStateMachineContext<>(oldStatus, null, null, null)));
 
         stateMachine.start();
-        stateMachine.sendEvent(MessageBuilder.withPayload(Event.APPROVE)
+        Message<Event> eventMessage = MessageBuilder.withPayload(Event.APPROVE)
                 .setHeader("newsId", news.getId())
-                .build());
+                .build();
+        stateMachine.sendEvent(eventMessage);
     }
 }
