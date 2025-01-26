@@ -1,6 +1,6 @@
-# Backend Assignment - News Management System
+# News Management System
 
-This project is a backend implementation of a **News Management System**, developed as part of the AppsWave Backend Developer assignment. It includes APIs for authentication, user management, and news management with **role-based access control**, built using **Spring Boot 2.7.14**, **Java 11**, **Tomcat 9**, and **MySQL**.
+This project is a backend implementation of a **News Management System**, developed as part of an assignment. It includes APIs for authentication, user management, and news management with **role-based access control**, built using **Spring Boot 2.7.14**, **Java 11**, **Tomcat 9**, and **MySQL**.
 
 ---
 
@@ -17,8 +17,6 @@ This project is a backend implementation of a **News Management System**, develo
 9. [Role-Based Access Control](#role-based-access-control)
 10. [Exception Handling](#exception-handling)
 11. [Setup Instructions](#setup-instructions)
-12. [API Endpoints](#api-endpoints)
-13. [Deliverables](#deliverables)
 
 ---
 
@@ -45,14 +43,34 @@ This project is a backend implementation of a **News Management System**, develo
 
 - Implements JWT for securing APIs.
 - **Token Time-To-Live (TTL)**: 1 minute.
-- Includes a **refresh token mechanism**.
+- Includes a **refresh token mechanism** valid for 30 minutes.
 - **Signature Algorithm**: HS512.
-- Only specific endpoints are permitted without authentication; all others require a valid JWT.
+- Only specific endpoints are permitted without authentication;
+  signup and login.
+-  all others require a valid JWT.
 - Role-based access control is enabled using Spring Security to secure methods and APIs.
 
 ### Password Hashing
 
 - Passwords are hashed using the **BCryptPasswordEncoder** algorithm before being stored in the database, ensuring secure authentication and storage.
+- 
+# Authentication API
+
+## Endpoints
+
+### 1. POST `/api/auth/signup`
+- Registers a new user.
+
+### 2. POST `/api/auth/login`
+- Logs in a user and returns an access token and refresh token.
+
+### 3. POST `/api/auth/logout`
+- Logs out a user.  
+- Requires the access token in the Authorization header.
+
+### 4. POST `/api/auth/refresh`
+- Refreshes the access token for an extra 1 minute and return it for the user.  
+- Requires the refresh token in the Authorization header (valid for 30 minutes).
 
 ---
 
