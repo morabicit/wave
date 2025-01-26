@@ -17,6 +17,7 @@ This project is a backend implementation of a **News Management System**, develo
 9. [Role-Based Access Control](#role-based-access-control)
 10. [Exception Handling](#exception-handling)
 11. [Setup Instructions](#setup-instructions)
+12. [Docker image for the Application](#docker-image)
 
 ---
 
@@ -206,9 +207,9 @@ To get the latest `Appswave` application image, run the following command:
 docker pull orabiii/appswave:latest```
 
 
-### 2. Run the Docker Image
+## 2. Run the Docker Image
 
-To run the downloaded image, execute:
+To run the downloaded image, execute the following command:
 
 ```bash
 docker run -d -p <Expose Port>:8080 --name appswave orabiii/appswave:latest```
